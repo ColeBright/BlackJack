@@ -32,11 +32,12 @@ jobs:
         run: dotnet build --no-restore --configuration Release
 
       - name: Run unit tests
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --verbosity normal
 
       - name: Upload Test Results (optional)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
+
           path: '**/TestResults/*.xml'
