@@ -17,6 +17,11 @@
             }
         }
 
+        public Deck(IEnumerable<Card> cards)
+        {
+            Cards = cards.ToList();
+        }
+
         public void Shuffle ()
         {
             for (int i = 0; i < Cards.Count; i++)
