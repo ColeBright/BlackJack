@@ -1,5 +1,4 @@
 ﻿using BlackJack.Game.GameModels;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BlackJack.Game
 {
@@ -54,11 +53,7 @@ namespace BlackJack.Game
         public GameState StartRound()
         {
             // so cards don't run out mid-deal
-            //Todo: does anything happen with the 3 or so cards, or are they just tossed?
-            if(Deck.Cards.Count < 4)
-            {
-                CreateDeck();
-            }
+            EnsureCardsAvailable(4);
 
             RefreshHands();
 
@@ -82,11 +77,15 @@ namespace BlackJack.Game
 
         /// <summary>
         /// Player requests additional card, checks the new total
+        /// Throws exception if round is not in progress
         /// </summary>
         /// <returns>Game state as player busted if over twenty one, otherwise in progress</returns>
         public GameState PlayerHit()
         {
-            //check if round finished
+
+            if (IsRoundFinished()) throw new InvalidOperationException("Round already finished.");
+
+            EnsureCardsAvailable();
 
             PlayerHand.AddCard(Deck.Draw());
 
@@ -95,8 +94,15 @@ namespace BlackJack.Game
             return GameState.InProgress;
         }
 
+        /// <summary>
+        /// Player decides to stay, triggering dealer to make final move
+        /// Throws exception if round is not in progress
+        /// </summary>
+        /// <returns>Game state as dealer busted if over twenty one, otherwise in pass to DetermineWinner</returns>
         public GameState PlayerStand()
         {
+            if (IsRoundFinished()) throw new InvalidOperationException("Round already finished.");
+
             DealerPlays();
 
             if (DealerHand.GetValue() > 21) return GameState.DealerBusted;
@@ -108,10 +114,14 @@ namespace BlackJack.Game
         {
             while (DealerHand.GetValue() < 17)
             {
+                EnsureCardsAvailable(1);
                 DealerHand.AddCard(Deck.Draw());
             }
         }
-
+        /// <summary>
+        /// Checks the dealer and player values against each other and sets the resulting game state
+        /// </summary>
+        /// <returns>Resulting state of the game</returns>
         public GameState DetermineWinner()
         {
             int playerValue = PlayerHand.GetValue();
@@ -120,6 +130,32 @@ namespace BlackJack.Game
             if (playerValue == dealerValue) return GameState.Push;
 
             return playerValue > dealerValue ? GameState.PlayerWin : GameState.DealerWin;
+        }
+        
+        public bool IsRoundFinished()
+        {
+            var outcome = PeekState();
+            return outcome != GameState.InProgress;
+        }
+
+        public GameState PeekState()
+        {
+            int playerValue = PlayerHand.GetValue();
+
+            if (playerValue > 21) return GameState.PlayerBusted;
+
+            return GameState.InProgress;
+        }
+
+        private void EnsureCardsAvailable(int requiredAmount = 1)
+        {
+            if (Deck == null) CreateDeck();
+
+            if (Deck.Cards.Count < requiredAmount)
+            {
+                //could decide what to do with remaining amount here
+                CreateDeck();
+            }
         }
 
     }
