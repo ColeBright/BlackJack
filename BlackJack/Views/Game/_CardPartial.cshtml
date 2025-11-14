@@ -1,0 +1,8 @@
+﻿@using BlackJack.Helpers
+@model BlackJack.Game.GameModels.Card
+
+@{
+    var imgPath = Url.Content(CardImageHelper.GetCardImagePath(Model));
+}
+
+<img src="@imgPath" alt="Model" style="width: 100px; height:auto;" />

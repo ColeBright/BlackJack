@@ -1,0 +1,35 @@
+﻿    @model BlackJack.Game.GameEngine
+
+@*
+
+
+*@
+@{
+
+    <div id="game-container">
+        <h2>BlackJack</h2>
+        <h4>Dealer</h4>
+        <ul>
+            @foreach (var card in Model.DealerHand.Cards){
+                @Html.Partial("_CardPartial", card)
+            }
+        </ul>
+        
+        <h4>Player</h4>
+        <ul>
+            @foreach (var card in Model.PlayerHand.Cards)
+            {
+                @Html.Partial("_CardPartial", card)
+            }
+        </ul>
+
+        <a asp-action="Hit">Hit</a>
+        <a asp-action="Stand">Stand</a>
+
+        <a asp-action="Start">New Round</a>
+
+    </div>
+
+
+
+}
