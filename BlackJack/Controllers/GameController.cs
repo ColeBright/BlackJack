@@ -40,9 +40,12 @@ namespace BlackJack.Controllers
             var dealerKeys = engine.DealerHand.Cards.Select(CardSerialization.ToKey).ToList();
 
             return new UiState(deckKeys, playerKeys, dealerKeys);
-
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         public IActionResult Game()
         {
