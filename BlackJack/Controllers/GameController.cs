@@ -58,12 +58,10 @@ namespace BlackJack.Controllers
         {
             var engine = new GameEngine();
             var stateBefore = EngineToState(engine);
-            engine.StartRound();
+            var outcome = engine.StartRound();
 
             var state = EngineToState(engine);
             SaveState(state);
-
-            //catch blackjack or push
 
             return View("Game", engine);
         }
@@ -78,10 +76,6 @@ namespace BlackJack.Controllers
             var outcome = engine.PlayerHit();
 
             SaveState(EngineToState(engine));
-
-            if (outcome == GameState.PlayerBusted)
-                return RedirectToAction("Result");
-
 
             return View("Game", engine);
         }
