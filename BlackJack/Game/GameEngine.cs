@@ -44,6 +44,7 @@ namespace BlackJack.Game
         {
             PlayerHand = new Hand();
             DealerHand = new Hand(isDealer: true);
+            PlayerHasStood = false;
         }
 
         /// <summary>
@@ -65,16 +66,7 @@ namespace BlackJack.Game
             PlayerHand.AddCard(Deck.Draw());
             DealerHand.AddCard(Deck.Draw());
 
-            //Check for naturals (natural blackjack = exactly 2 cards totaling 21)
-            bool playerBlackJack = PlayerHand.IsBlackjack();
-            bool dealerBlackJack = DealerHand.IsBlackjack();
-
-            if (playerBlackJack && dealerBlackJack) return GameState.Push;
-
-            if (playerBlackJack) return GameState.PlayerBlackjack;
-            if (dealerBlackJack) return GameState.DealerBlackjack;
-
-            return GameState.InProgress;
+            return CheckForBlackjack() ?? GameState.InProgress;
         }
 
         /// <summary>
@@ -147,14 +139,9 @@ namespace BlackJack.Game
             int playerValue = PlayerHand.GetValue();
             int dealerValue = DealerHand.GetValue();
 
-            
-            bool playerBlackjack = PlayerHand.IsBlackjack();
-            bool dealerBlackjack = DealerHand.IsBlackjack();
-
             // Check for natural blackjack first
-            if (playerBlackjack && dealerBlackjack) return GameState.Push;
-            if (playerBlackjack) return GameState.PlayerBlackjack;
-            if (dealerBlackjack) return GameState.DealerBlackjack;
+            var blackjackState = CheckForBlackjack();
+            if (blackjackState.HasValue) return blackjackState.Value;
 
             // Then check for regular 21 (3+ cards)
             if (playerValue == 21) return GameState.PlayerWin;
@@ -165,10 +152,28 @@ namespace BlackJack.Game
 
             if (PlayerHasStood && dealerValue >= 17)
             {
-                return DetermineWinner();
+                // Use already calculated values instead of recalculating
+                if (playerValue == dealerValue) return GameState.Push;
+                return playerValue > dealerValue ? GameState.PlayerWin : GameState.DealerWin;
             }
 
             return GameState.InProgress;
+        }
+
+        /// <summary>
+        /// Checks for natural blackjack conditions (exactly 2 cards totaling 21)
+        /// </summary>
+        /// <returns>GameState if blackjack detected, null otherwise</returns>
+        private GameState? CheckForBlackjack()
+        {
+            bool playerBlackjack = PlayerHand.IsBlackjack();
+            bool dealerBlackjack = DealerHand.IsBlackjack();
+
+            if (playerBlackjack && dealerBlackjack) return GameState.Push;
+            if (playerBlackjack) return GameState.PlayerBlackjack;
+            if (dealerBlackjack) return GameState.DealerBlackjack;
+
+            return null;
         }
 
         private void EnsureCardsAvailable(int requiredAmount = 1)

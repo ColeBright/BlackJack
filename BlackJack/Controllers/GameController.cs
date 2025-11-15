@@ -61,7 +61,7 @@ namespace BlackJack.Controllers
         {
             var engine = new GameEngine();
             var stateBefore = EngineToState(engine);
-            var outcome = engine.StartRound();
+            engine.StartRound();
 
             var state = EngineToState(engine);
             SaveState(state);
@@ -76,7 +76,7 @@ namespace BlackJack.Controllers
             if (state == null) return RedirectToAction("Start");
 
             var engine = RehydrateEngine(state);
-            var outcome = engine.PlayerHit();
+            engine.PlayerHit();
 
             SaveState(EngineToState(engine));
 
@@ -90,7 +90,7 @@ namespace BlackJack.Controllers
             if (state == null) return RedirectToAction("Start");
 
             var engine = RehydrateEngine(state);
-            var final = engine.PlayerStand();
+            engine.PlayerStand();
 
             SaveState(EngineToState(engine));
 
