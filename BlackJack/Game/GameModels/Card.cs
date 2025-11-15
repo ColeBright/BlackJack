@@ -7,9 +7,9 @@
         public Suit Suit { get; set; }
         public Rank Rank { get; set; }
 
-        public Card(Suit suit, Rank pip) { 
+        public Card(Suit suit, Rank rank) { 
             Suit = suit;
-            Rank = pip;
+            Rank = rank;
         }
 
         public int GetValue()

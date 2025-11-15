@@ -1,0 +1,39 @@
+﻿@model BlackJack.Game.GameEngine
+
+@{
+    <div id="game-container">
+        <h2>BlackJack</h2>
+        <h4>Dealer</h4>
+        <ul>
+            @foreach (var card in Model.DealerHand.Cards){
+                @Html.Partial("_CardPartial", card)
+            }
+        </ul>
+        
+        <h4>Player</h4>
+        <ul>
+            @foreach (var card in Model.PlayerHand.Cards)
+            {
+                @Html.Partial("_CardPartial", card)
+            }
+        </ul>
+
+        <form method="post" asp-action="Hit">
+            <button type="submit">Hit</button>            
+        </form>
+        <form method="post" asp-action="Stand">
+            <button type="submit">Stand</button>
+        </form>
+
+        <a asp-action="Start">New Round</a>
+
+        @if (Model.IsRoundFinished())
+        {
+            @Html.Partial("_ResultPartial", Model)
+        }
+
+    </div>
+
+
+
+}

@@ -1,4 +1,5 @@
 ﻿using BlackJack.Game.GameModels;
+using BlackJack.Helpers;
 
 namespace BlackJack.Game
 {
@@ -19,6 +20,7 @@ namespace BlackJack.Game
 
         public Hand PlayerHand { get; private set; }
         public Hand DealerHand { get; private set; }
+        public bool PlayerHasStood { get; private set; }
 
         public GameEngine() 
         { 
@@ -107,6 +109,8 @@ namespace BlackJack.Game
 
             if (DealerHand.GetValue() > 21) return GameState.DealerBusted;
 
+            PlayerHasStood = true;
+
             return DetermineWinner();
         }
 
@@ -141,8 +145,23 @@ namespace BlackJack.Game
         public GameState PeekState()
         {
             int playerValue = PlayerHand.GetValue();
+            int dealerValue = DealerHand.GetValue();
+
+            
+            bool playerBlackjack = PlayerHand.IsBlackjack();
+            bool dealerBlackjack = DealerHand.IsBlackjack();
+
+            if (playerBlackjack && dealerBlackjack) return GameState.Push;
+            if (playerBlackjack) return GameState.PlayerBlackjack;
+            if (dealerBlackjack) return GameState.DealerBlackjack;
 
             if (playerValue > 21) return GameState.PlayerBusted;
+            if (dealerValue > 21) return GameState.DealerBusted;
+
+            if (PlayerHasStood && dealerValue >= 17)
+            {
+                return DetermineWinner();
+            }
 
             return GameState.InProgress;
         }
@@ -156,6 +175,30 @@ namespace BlackJack.Game
                 //could decide what to do with remaining amount here
                 CreateDeck();
             }
+        }
+
+        public void LoadHands(IEnumerable<string> playerCardKeys, IEnumerable<string> dealerCardKeys)
+        {
+            if (playerCardKeys == null) playerCardKeys = Array.Empty<string>();
+            if (dealerCardKeys == null) dealerCardKeys = Array.Empty<string>();
+
+            var newPlayer = new Hand();
+            foreach (var k in playerCardKeys)
+            {
+                var card = CardSerialization.FromKey(k);
+                newPlayer.AddCard(card);
+            }
+
+            var newDealer = new Hand(isDealer: true);
+            foreach (var k in dealerCardKeys)
+            {
+                var card = CardSerialization.FromKey(k);
+                newDealer.AddCard(card);
+            }
+
+            // Atomically replace the hands
+            PlayerHand = newPlayer;
+            DealerHand = newDealer;
         }
 
     }

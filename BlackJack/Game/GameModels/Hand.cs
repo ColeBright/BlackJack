@@ -27,5 +27,10 @@
             return total;
         }
 
+        public bool IsBlackjack()
+        {
+            return cards.Count() == 2 && cards.Sum(c => c.GetValue()) == 21;
+        }
+
     }
 }
