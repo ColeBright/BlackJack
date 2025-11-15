@@ -1,42 +1,47 @@
 ﻿@model BlackJack.Game.GameEngine
 
 @{
-    <div id="game-container">
-        <h2>BlackJack</h2>
-        <h4>Dealer</h4>
-        <ul>
-            @foreach (var card in Model.DealerHand.Cards){
-                @Html.Partial("_CardPartial", card)
-            }
-        </ul>
-        
-        <h4>Player</h4>
-        <ul>
-            @foreach (var card in Model.PlayerHand.Cards)
-            {
-                @Html.Partial("_CardPartial", card)
-            }
-        </ul>
-
-        @if (!Model.IsRoundFinished())
-        {
-            <form method="post" asp-action="Hit">
-                <button type="submit">Hit</button>            
-            </form>
-            <form method="post" asp-action="Stand">
-                <button type="submit">Stand</button>
-            </form>
-        }
-
-        <a asp-action="Start">New Round</a>
-
-        @if (Model.IsRoundFinished())
-        {
-            @Html.Partial("_ResultPartial", Model)
-        }
-
-    </div>
-
-
-
+    var imgPath = "/images/cards/back.png";
 }
+<div id="game-container">
+    <h2>BlackJack</h2>
+    <h4>Dealer</h4>
+    <ul>
+        @for (int i = 0; i < Model.DealerHand.Cards.Count; i++)
+        {
+            if (i == 1)
+            {
+                <img src="@imgPath" alt="Back of card" style="width: 110px; height:auto;" />
+            }
+            else{
+                @Html.Partial("_CardPartial", Model.DealerHand.Cards[i])
+            }
+        }
+    </ul>
+
+    <h4>Player</h4>
+    <ul>
+        @foreach (var card in Model.PlayerHand.Cards)
+        {
+            @Html.Partial("_CardPartial", card)
+        }
+    </ul>
+
+    @if (!Model.IsRoundFinished())
+    {
+        <form method="post" asp-action="Hit">
+            <button type="submit">Hit</button>
+        </form>
+        <form method="post" asp-action="Stand">
+            <button type="submit">Stand</button>
+        </form>
+    }
+
+    <a asp-action="Start">New Round</a>
+
+    @if (Model.IsRoundFinished())
+    {
+        @Html.Partial("_ResultPartial", Model)
+    }
+
+</div>
