@@ -65,9 +65,9 @@ namespace BlackJack.Game
             PlayerHand.AddCard(Deck.Draw());
             DealerHand.AddCard(Deck.Draw());
 
-            //Check for naturals
-            bool playerBlackJack = PlayerHand.GetValue() == 21;
-            bool dealerBlackJack = DealerHand.GetValue() == 21;
+            //Check for naturals (natural blackjack = exactly 2 cards totaling 21)
+            bool playerBlackJack = PlayerHand.IsBlackjack();
+            bool dealerBlackJack = DealerHand.IsBlackjack();
 
             if (playerBlackJack && dealerBlackJack) return GameState.Push;
 
@@ -151,9 +151,14 @@ namespace BlackJack.Game
             bool playerBlackjack = PlayerHand.IsBlackjack();
             bool dealerBlackjack = DealerHand.IsBlackjack();
 
+            // Check for natural blackjack first
             if (playerBlackjack && dealerBlackjack) return GameState.Push;
             if (playerBlackjack) return GameState.PlayerBlackjack;
             if (dealerBlackjack) return GameState.DealerBlackjack;
+
+            // Then check for regular 21 (3+ cards)
+            if (playerValue == 21) return GameState.PlayerWin;
+            if (dealerValue == 21) return GameState.DealerWin;
 
             if (playerValue > 21) return GameState.PlayerBusted;
             if (dealerValue > 21) return GameState.DealerBusted;
