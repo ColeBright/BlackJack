@@ -3,6 +3,7 @@
     public record UiState(
         List<string> Deck,
         List<string> PlayerCards,
-        List<string> DealerCards
+        List<string> DealerCards,
+        bool PlayerHasStood = false
         );
 }

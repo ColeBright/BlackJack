@@ -29,6 +29,7 @@ namespace BlackJack.Controllers
             var engine = new GameEngine(deck);
 
             engine.LoadHands(state.PlayerCards, state.DealerCards);
+            engine.RestorePlayerHasStood(state.PlayerHasStood);
 
             return engine;
         }
@@ -39,7 +40,7 @@ namespace BlackJack.Controllers
             var playerKeys = engine.PlayerHand.Cards.Select(CardSerialization.ToKey).ToList();
             var dealerKeys = engine.DealerHand.Cards.Select(CardSerialization.ToKey).ToList();
 
-            return new UiState(deckKeys, playerKeys, dealerKeys);
+            return new UiState(deckKeys, playerKeys, dealerKeys, engine.PlayerHasStood);
         }
 
         public IActionResult Index()

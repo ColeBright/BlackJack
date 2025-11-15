@@ -211,5 +211,10 @@ namespace BlackJack.Game
             DealerHand = newDealer;
         }
 
+        public void RestorePlayerHasStood(bool hasStood)
+        {
+            PlayerHasStood = hasStood;
+        }
+
     }
 }
