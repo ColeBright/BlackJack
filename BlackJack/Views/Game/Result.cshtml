@@ -1,0 +1,26 @@
+﻿@model BlackJack.Game.GameEngine
+
+<h2>Result</h2>
+
+<p>Player: @Model.PlayerHand.GetValue()</p>
+<p>Dealer: @Model.DealerHand.GetValue()</p>
+
+@if (Model.PlayerHand.GetValue() > 21){
+    <p>Player busted</p>
+}
+
+else if (Model.DealerHand.GetValue() > 21)
+{
+    <p>Dealer busted</p>
+}
+
+else{
+    <p>Winner: </p>
+}
+
+<a asp-action="Start">New Round</a>
+
+
+
+
+

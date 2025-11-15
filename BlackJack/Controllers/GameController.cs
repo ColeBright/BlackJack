@@ -5,37 +5,45 @@ namespace BlackJack.Controllers
 {
     public class GameController : Controller
     {
-        private GameEngine engine;
-        public GameController() 
+        private readonly ILogger<GameController> _logger;
+
+        private GameEngine _engine = new GameEngine();
+        public GameController(ILogger<GameController> logger) 
         {
-             engine = new GameEngine();
+            _logger = logger;
+             //_engine = engine;
         }
 
 
         public IActionResult Game()
         {
-            return View("Game", engine);
+            return View("Game", _engine);
         }
 
         public IActionResult Start()
         {
-            var result = engine.StartRound();
+            var result = _engine.StartRound();
 
-            return View("Game", engine);
+            return View("Game", _engine);
         }
 
         public IActionResult Hit()
         {
-            var result = engine.PlayerHit();
+            var result = _engine.PlayerHit();
 
-            return View("Game", engine);
+            return View("Game", _engine);
         }
 
         public IActionResult Stand()
         {
-            var result = engine.PlayerStand();
+            var result = _engine.PlayerStand();
 
-            return View("Game", engine);
+            return RedirectToAction("Result");
+        }
+
+        public IActionResult Result()
+        {
+            return View("Result", _engine);
         }
     }
 }
