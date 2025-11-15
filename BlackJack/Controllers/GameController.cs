@@ -68,6 +68,7 @@ namespace BlackJack.Controllers
             return View("Game", engine);
         }
 
+        [HttpPost]
         public IActionResult Hit()
         {
             var state = LoadState();
@@ -85,6 +86,7 @@ namespace BlackJack.Controllers
             return View("Game", engine);
         }
 
+        [HttpPost]
         public IActionResult Stand()
         {
             var state = LoadState();
@@ -95,7 +97,7 @@ namespace BlackJack.Controllers
 
             SaveState(EngineToState(engine));
 
-            return RedirectToAction("Result");
+            return View("Game", engine);
         }
 
         public IActionResult Result()
@@ -104,7 +106,7 @@ namespace BlackJack.Controllers
             if (state == null) return RedirectToAction("Start");
 
             var engine = RehydrateEngine(state);
-            return View("Result", engine);
+            return View("Game", engine);
         }
     }
 }

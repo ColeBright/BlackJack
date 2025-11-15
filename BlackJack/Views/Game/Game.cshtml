@@ -27,6 +27,11 @@
 
         <a asp-action="Start">New Round</a>
 
+        @if (Model.IsRoundFinished())
+        {
+            @Html.Partial("_ResultPartial", Model)
+        }
+
     </div>
 
 

@@ -1,0 +1,44 @@
+﻿@using BlackJack.Game
+@model BlackJack.Game.GameEngine
+@{
+    var state = Model.PeekState();
+}
+
+<h2>Result</h2>
+
+<p>Player: @Model.PlayerHand.GetValue()</p>
+<p>Dealer: @Model.DealerHand.GetValue()</p>
+
+<p>
+    @switch (state)
+    {
+        case GameState.PlayerBusted:
+            <text>Player busted — Dealer wins.</text>
+            ; break;
+        case GameState.DealerBusted:
+            <text>Dealer busted — Player wins.</text>
+            ; break;
+        case GameState.PlayerBlackjack:
+            <text>Player has a natural Blackjack!</text>
+            ; break;
+        case GameState.DealerBlackjack:
+            <text>Dealer has a natural Blackjack!</text>
+            ; break;
+        case GameState.Push:
+            <text>Push (tie).</text>
+            ; break;
+        case GameState.PlayerWin:
+            <text>Player wins.</text>
+            ; break;
+        case GameState.DealerWin:
+            <text>Dealer wins.</text>
+            ; break;
+        default:
+            <text>Round in progress.</text>
+            ; break;
+    }
+</p>
+
+
+
+
