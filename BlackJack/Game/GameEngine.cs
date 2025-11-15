@@ -1,4 +1,5 @@
 ﻿using BlackJack.Game.GameModels;
+using BlackJack.Helpers;
 
 namespace BlackJack.Game
 {
@@ -156,6 +157,30 @@ namespace BlackJack.Game
                 //could decide what to do with remaining amount here
                 CreateDeck();
             }
+        }
+
+        public void LoadHands(IEnumerable<string> playerCardKeys, IEnumerable<string> dealerCardKeys)
+        {
+            if (playerCardKeys == null) playerCardKeys = Array.Empty<string>();
+            if (dealerCardKeys == null) dealerCardKeys = Array.Empty<string>();
+
+            var newPlayer = new Hand();
+            foreach (var k in playerCardKeys)
+            {
+                var card = CardSerialization.FromKey(k);
+                newPlayer.AddCard(card);
+            }
+
+            var newDealer = new Hand(isDealer: true);
+            foreach (var k in dealerCardKeys)
+            {
+                var card = CardSerialization.FromKey(k);
+                newDealer.AddCard(card);
+            }
+
+            // Atomically replace the hands
+            PlayerHand = newPlayer;
+            DealerHand = newDealer;
         }
 
     }

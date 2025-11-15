@@ -1,4 +1,7 @@
 ﻿using BlackJack.Game;
+using BlackJack.Game.GameModels;
+using BlackJack.Game.UiSession;
+using BlackJack.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlackJack.Controllers
@@ -7,43 +10,101 @@ namespace BlackJack.Controllers
     {
         private readonly ILogger<GameController> _logger;
 
-        private GameEngine _engine = new GameEngine();
+        private const string SessionKey = "BlackJack.UiState";
+
+        private UiState? LoadState() => HttpContext.Session.GetUiState(SessionKey);
+
         public GameController(ILogger<GameController> logger) 
         {
             _logger = logger;
-             //_engine = engine;
+        }
+
+        private void SaveState(UiState state) => HttpContext.Session.SetUiState(SessionKey, state);
+
+        private GameEngine RehydrateEngine(UiState state)
+        {
+            var deckCards = state.Deck.Select(CardSerialization.FromKey).ToList();
+            var deck = new Deck(deckCards);
+
+            var engine = new GameEngine(deck);
+
+            engine.LoadHands(state.PlayerCards, state.DealerCards);
+
+            return engine;
+        }
+
+        private UiState EngineToState(GameEngine engine)
+        {
+            var deckKeys = engine.Deck.Cards.Select(CardSerialization.ToKey).ToList();
+            var playerKeys = engine.PlayerHand.Cards.Select(CardSerialization.ToKey).ToList();
+            var dealerKeys = engine.DealerHand.Cards.Select(CardSerialization.ToKey).ToList();
+
+            return new UiState(deckKeys, playerKeys, dealerKeys);
+
         }
 
 
         public IActionResult Game()
         {
-            return View("Game", _engine);
+            var state = LoadState();
+            if (state == null) return RedirectToAction("Start");
+
+            var engine = RehydrateEngine(state);
+
+            return View("Game", engine);
         }
 
         public IActionResult Start()
         {
-            var result = _engine.StartRound();
+            var engine = new GameEngine();
+            var stateBefore = EngineToState(engine);
+            engine.StartRound();
 
-            return View("Game", _engine);
+            var state = EngineToState(engine);
+            SaveState(state);
+
+            //catch blackjack or push
+
+            return View("Game", engine);
         }
 
         public IActionResult Hit()
         {
-            var result = _engine.PlayerHit();
+            var state = LoadState();
+            if (state == null) return RedirectToAction("Start");
 
-            return View("Game", _engine);
+            var engine = RehydrateEngine(state);
+            var outcome = engine.PlayerHit();
+
+            SaveState(EngineToState(engine));
+
+            if (outcome == GameState.PlayerBusted)
+                return RedirectToAction("Result");
+
+
+            return View("Game", engine);
         }
 
         public IActionResult Stand()
         {
-            var result = _engine.PlayerStand();
+            var state = LoadState();
+            if (state == null) return RedirectToAction("Start");
+
+            var engine = RehydrateEngine(state);
+            var final = engine.PlayerStand();
+
+            SaveState(EngineToState(engine));
 
             return RedirectToAction("Result");
         }
 
         public IActionResult Result()
         {
-            return View("Result", _engine);
+            var state = LoadState();
+            if (state == null) return RedirectToAction("Start");
+
+            var engine = RehydrateEngine(state);
+            return View("Result", engine);
         }
     }
 }
