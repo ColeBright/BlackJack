@@ -19,12 +19,32 @@ namespace BlackJackTests
         }
 
         [Fact]
+        public async Task Index_Returns_PlayPage()
+        {
+            var response = await _httpClient.GetAsync("/Game/Index");
+
+            response.EnsureSuccessStatusCode();
+            var content = await response.Content.ReadAsStringAsync();
+
+            Assert.Contains("Play", content);
+        }
+
+        [Fact]
         public async Task Start_Post_InitializesGameAndRedirectsToGame()
         {
             var response = await _httpClient.PostAsync("/Game/Start", null);
 
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Equal("/Game/Game", response.Headers.Location?.OriginalString);
+        }
+
+        [Fact]
+        public async Task Game_GetWithoutSession_RedirectsToIndex()
+        {
+            var response = await _httpClient.GetAsync("/Game/Game");
+
+            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
+            Assert.Equal("/", response.Headers.Location?.OriginalString);
         }
 
     }
