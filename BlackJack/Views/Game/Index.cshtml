@@ -2,9 +2,11 @@
     ViewData["Title"] = "BlackJack";
 }
 
-<h2>Welcome to BlackJack!</h2>
-<p>Click Play to start a new round.</p>
+<div class="game-container" data-bs-theme="dark">
+    <h2>Welcome to BlackJack!</h2>
+    <p>Click Play to start a new round.</p>
 
-<form method="post" asp-action="Start">
-    <button type="submit">Play</button>
-</form>
+    <form method="post" asp-action="Start">
+        <button type="submit" class="btn btn-primary">Play</button>
+    </form>
+</div>

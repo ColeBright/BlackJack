@@ -12,36 +12,19 @@ namespace BlackJack.Controllers
 
         private const string SessionKey = "BlackJack.UiState";
 
-        private UiState? LoadState() => HttpContext.Session.GetUiState(SessionKey);
+        private GameEngine LoadEngine()
+        {
+            var dto = HttpContext.Session.GetGameState(SessionKey);
+            if (dto == null) return null;
+            return GameEngine.FromDto(dto);
+        }
 
         public GameController(ILogger<GameController> logger) 
         {
             _logger = logger;
         }
 
-        private void SaveState(UiState state) => HttpContext.Session.SetUiState(SessionKey, state);
-
-        private GameEngine RehydrateEngine(UiState state)
-        {
-            var deckCards = state.Deck.Select(CardSerialization.FromKey).ToList();
-            var deck = new Deck(deckCards);
-
-            var engine = new GameEngine(deck);
-
-            engine.LoadHands(state.PlayerCards, state.DealerCards);
-            engine.RestorePlayerHasStood(state.PlayerHasStood);
-
-            return engine;
-        }
-
-        private UiState EngineToState(GameEngine engine)
-        {
-            var deckKeys = engine.Deck.Cards.Select(CardSerialization.ToKey).ToList();
-            var playerKeys = engine.PlayerHand.Cards.Select(CardSerialization.ToKey).ToList();
-            var dealerKeys = engine.DealerHand.Cards.Select(CardSerialization.ToKey).ToList();
-
-            return new UiState(deckKeys, playerKeys, dealerKeys, engine.PlayerHasStood);
-        }
+        private void SaveState(GameEngine engine) => HttpContext.Session.SetGameState(SessionKey, engine.ToDto());
 
         public IActionResult Index()
         {
@@ -50,61 +33,79 @@ namespace BlackJack.Controllers
 
         public IActionResult Game()
         {
-            var state = LoadState();
-            if (state == null) return RedirectToAction("Start");
+            var state = LoadEngine();
+            if (state == null) return RedirectToAction("Index");
 
-            var engine = RehydrateEngine(state);
-
-            return View("Game", engine);
+            return View("Game", state);
         }
 
+        [HttpPost]
         public IActionResult Start()
         {
-            var engine = new GameEngine();
-            var stateBefore = EngineToState(engine);
-            engine.StartRound();
+            try
+            {
+                var engine = new GameEngine();
+                engine.StartRound();
 
-            var state = EngineToState(engine);
-            SaveState(state);
+                SaveState(engine);
 
-            return View("Game", engine);
+                return RedirectToAction("Game");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error starting new round");
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult Hit()
         {
-            var state = LoadState();
-            if (state == null) return RedirectToAction("Start");
+            try
+            {
+                var state = LoadEngine();
+                if (state == null) return RedirectToAction("Index");
 
-            var engine = RehydrateEngine(state);
-            engine.PlayerHit();
+                state.PlayerHit();
 
-            SaveState(EngineToState(engine));
+                SaveState(state);
 
-            return View("Game", engine);
+                return RedirectToAction("Game");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing hit");
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult Stand()
         {
-            var state = LoadState();
-            if (state == null) return RedirectToAction("Start");
+            try
+            {
+                var state = LoadEngine();
+                if (state == null) return RedirectToAction("Index");
 
-            var engine = RehydrateEngine(state);
-            engine.PlayerStand();
+                state.PlayerStand();
 
-            SaveState(EngineToState(engine));
+                SaveState(state);
 
-            return View("Game", engine);
+                return RedirectToAction("Game");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing stand");
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult Result()
         {
-            var state = LoadState();
+            var state = LoadEngine();
             if (state == null) return RedirectToAction("Start");
 
-            var engine = RehydrateEngine(state);
-            return View("Game", engine);
+            return View("Game", state);
         }
     }
 }

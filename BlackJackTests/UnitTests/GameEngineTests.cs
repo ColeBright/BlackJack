@@ -1,7 +1,7 @@
 ﻿using BlackJack.Game;
 using BlackJack.Game.GameModels;
 
-namespace BlackJackTests
+namespace BlackJackTests.UnitTests
 {
     public class GameEngineTests
     {
@@ -26,7 +26,7 @@ namespace BlackJackTests
             var dealer2 = new Card(Suit.Diamonds, Rank.Five);
 
             //Arrange deck deterministically
-            var deck = new Deck(new[] {player1, dealer1, player2, dealer2});
+            var deck = new Deck(new[] { player1, dealer1, player2, dealer2 });
 
             var engine = new GameEngine(deck);
 
@@ -85,7 +85,7 @@ namespace BlackJackTests
         }
 
         [Fact]
-        public void PlayerStandsAndDealerBusts() 
+        public void PlayerStandsAndDealerBusts()
         {
             // Arrange player and dealer cards in expected order
 

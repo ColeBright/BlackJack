@@ -2,21 +2,29 @@
 {
     public class Hand
     {
-        private List<Card> cards = new List<Card>();
+        private readonly List<Card> _cards;
 
         public bool IsDealer { get; }
 
         public Hand(bool isDealer = false) {
             IsDealer = isDealer;
+            _cards = new List<Card>();
         }
 
-        public IReadOnlyList<Card> Cards => cards;
-        public void AddCard(Card card) => cards.Add(card);
+        public Hand(IEnumerable<Card> cards, bool isDealer = false)
+        {
+            if (cards == null) throw new ArgumentNullException(nameof(cards));
+            IsDealer = isDealer;
+            _cards = new List<Card>(cards);
+        }
+
+        public IReadOnlyList<Card> Cards => _cards;
+        public void AddCard(Card card) => _cards.Add(card);
 
         public int GetValue()
         {
-            int total = cards.Sum(c => c.GetValue());
-            int aces = cards.Count(c => c.Rank == Rank.Ace);
+            int total = _cards.Sum(c => c.GetValue());
+            int aces = _cards.Count(c => c.Rank == Rank.Ace);
 
             while(total > 21 && aces > 0)
             {
@@ -29,7 +37,7 @@
 
         public bool IsBlackjack()
         {
-            return cards.Count() == 2 && cards.Sum(c => c.GetValue()) == 21;
+            return _cards.Count() == 2 && _cards.Sum(c => c.GetValue()) == 21;
         }
 
     }

@@ -17,7 +17,11 @@ var app = builder.Build();
 app.UseSession();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -36,3 +40,6 @@ app.MapControllerRoute(
     pattern: "{controller=Game}/{action=Index}/{id?}");
 
 app.Run();
+
+// Make the implicit Program class public so test infrastructure can access it
+public partial class Program { }

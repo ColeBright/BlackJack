@@ -1,5 +1,7 @@
-﻿using BlackJack.Game.GameModels;
+﻿using BlackJack.DataTransfer.GameDtos;
+using BlackJack.Game.GameModels;
 using BlackJack.Helpers;
+using System.Runtime.CompilerServices;
 
 namespace BlackJack.Game
 {
@@ -214,6 +216,37 @@ namespace BlackJack.Game
         public void RestorePlayerHasStood(bool hasStood)
         {
             PlayerHasStood = hasStood;
+        }
+
+        public GameStateDto ToDto()
+        {
+            return new GameStateDto
+            {
+                DeckKeys = Deck.Cards.Select(CardSerialization.ToKey).ToList(),
+                PlayerHand = new HandDto
+                {
+                    CardKeys = PlayerHand.Cards.Select(CardSerialization.ToKey).ToList(),
+                    IsDealer = false
+                },
+                DealerHand = new HandDto
+                {
+                    CardKeys = DealerHand.Cards.Select(CardSerialization.ToKey).ToList(),
+                    IsDealer = true
+                },
+                PlayerHasStood = this.PlayerHasStood
+            };
+        }
+
+        public static GameEngine FromDto(GameStateDto dto)
+        {
+            var deck = new Deck(dto.DeckKeys.Select(CardSerialization.FromKey));
+            var engine = new GameEngine(deck);
+
+            engine.PlayerHand = new Hand(dto.PlayerHand.CardKeys.Select(CardSerialization.FromKey).ToList());
+            engine.DealerHand = new Hand(dto.DealerHand.CardKeys.Select(CardSerialization.FromKey).ToList(), isDealer: true);
+            engine.PlayerHasStood = dto.PlayerHasStood;
+
+            return engine;
         }
 
     }
