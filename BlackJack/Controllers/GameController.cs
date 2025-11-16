@@ -42,38 +42,62 @@ namespace BlackJack.Controllers
         [HttpPost]
         public IActionResult Start()
         {
-            var engine = new GameEngine();
-            engine.StartRound();
+            try
+            {
+                var engine = new GameEngine();
+                engine.StartRound();
 
-            SaveState(engine);
+                SaveState(engine);
 
-            return RedirectToAction("Game");
+                return RedirectToAction("Game");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error starting new round");
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult Hit()
         {
-            var state = LoadEngine();
-            if (state == null) return RedirectToAction("Index");
+            try
+            {
+                var state = LoadEngine();
+                if (state == null) return RedirectToAction("Index");
 
-            state.PlayerHit();
+                state.PlayerHit();
 
-            SaveState(state);
+                SaveState(state);
 
-            return RedirectToAction("Game");
+                return RedirectToAction("Game");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing hit");
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult Stand()
         {
-            var state = LoadEngine();
-            if (state == null) return RedirectToAction("Index");
+            try
+            {
+                var state = LoadEngine();
+                if (state == null) return RedirectToAction("Index");
 
-            state.PlayerStand();
+                state.PlayerStand();
 
-            SaveState(state);
+                SaveState(state);
 
-            return RedirectToAction("Game");
+                return RedirectToAction("Game");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing stand");
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult Result()
