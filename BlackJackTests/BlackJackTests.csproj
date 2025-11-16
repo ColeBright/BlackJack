@@ -33,12 +33,9 @@
       <_AppDepsFile Include="$(AppDepsPath)" Condition="Exists('$(AppDepsPath)')" />
     </ItemGroup>
 
-    <Copy SourceFiles="@(_AppDepsFile)"
-          DestinationFiles="$(OutputPath)testhost.deps.json"
-          SkipUnchangedFiles="true"
-          Condition="@(_AppDepsFile->Count()) &gt; 0" />
+    <Copy SourceFiles="@(_AppDepsFile)" DestinationFiles="$(OutputPath)testhost.deps.json" SkipUnchangedFiles="true" Condition="@(_AppDepsFile-&gt;Count()) &gt; 0" />
 
-    <Warning Text="Could not find $(AppDepsPath). testhost.deps.json not copied." Condition="@(_AppDepsFile->Count()) == 0" />
+    <Warning Text="Could not find $(AppDepsPath). testhost.deps.json not copied." Condition="@(_AppDepsFile-&gt;Count()) == 0" />
   </Target>
 
 </Project>

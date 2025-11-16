@@ -1,6 +1,6 @@
 ﻿using BlackJack.Game.GameModels;
 
-namespace BlackJackTests
+namespace BlackJackTests.UnitTests
 {
 
     public class BlackjackTestData

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
-namespace BlackJackTests
+namespace BlackJackTests.IntegrationTests
 {
     public class GameControllerTests : IClassFixture<WebApplicationFactory<Program>>
     {
