@@ -37,7 +37,9 @@
         </form>
     }
 
-    <a asp-action="Start">New Round</a>
+    <form method="post" asp-action="Start">
+        <button type="submit">New Round</button>
+    </form>
 
     @if (Model.IsRoundFinished())
     {
