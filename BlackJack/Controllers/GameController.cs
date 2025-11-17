@@ -41,7 +41,7 @@ namespace BlackJack.Controllers
         [HttpPost]
         public IActionResult PlaceBet(decimal amount)
         {
-            var engine = LoadEngine();
+            var engine = new GameEngine();
             try
             {
                 engine.PlayerBet.PlaceBet(amount);
@@ -61,8 +61,8 @@ namespace BlackJack.Controllers
         {
             try
             {
-                var engine = LoadEngine();
-                if (engine.PlayerBet.CurrentBet <= 0)
+                var engine = new GameEngine();
+                if (engine.PlayerBet.CurrentBet <= 0 || engine.PlayerBet == null)
                 {
                     TempData["Error"] = "Place a bet first!";
                     return RedirectToAction("Game");
