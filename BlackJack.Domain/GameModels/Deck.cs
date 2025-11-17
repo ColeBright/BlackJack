@@ -1,4 +1,5 @@
-﻿namespace BlackJack.Game.GameModels
+﻿
+namespace BlackJack.Domain.GameModels
 {
     public class Deck
     {
@@ -8,10 +9,13 @@
 
         public Random randomNumber = new Random();
 
-        public Deck() {
+        public Deck()
+        {
 
-            foreach (Suit suit in Enum.GetValues(typeof(Suit))) {
-                foreach (Rank rank in Enum.GetValues(typeof(Rank))) {
+            foreach (Suit suit in Enum.GetValues(typeof(Suit)))
+            {
+                foreach (Rank rank in Enum.GetValues(typeof(Rank)))
+                {
                     Cards.Add(new Card(suit, rank));
                 }
             }
@@ -22,7 +26,7 @@
             Cards = cards.ToList();
         }
 
-        public void Shuffle ()
+        public void Shuffle()
         {
             for (int i = 0; i < Cards.Count; i++)
             {
