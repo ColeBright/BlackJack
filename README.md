@@ -1,19 +1,53 @@
 # Blackjack
 
-An ASP.NET MVC rendition of the classic Blackjack game, also known as 21.
+An **ASP.NET MVC** rendition of the classic Blackjack card game (also known as 21).
 
-## What is Blackjack? How do I play?
+---
 
-Using a traditional deck of playing cards, a dealer deals you and themselves two initial cards. Face cards (King, Queen, and Jack) are worth 10. Numbered cards 2-10 are their original values. Aces are trickier - They are 11 if they don't put you over 21, at which point they are worth 1.
-Speaking of 21, the goal is to have a hand with a higher value while not exceeding 21 in total. The ideal hand is something like an Ace and a face card or a ten card. If you are dealt a hand below that and would like to have another card to get closer to 21, you request a "Hit". But be careful - if you exceed 21 you lose the round. If you don't want any more cards, you "Stand" with your cards. Then dealer then reveals their covered card and it is determined then who wins.
+## Features
 
-## How to Use
+- Single-player game against a dealer
+- Accurate Blackjack rules with card values:
+  - Number cards (2–10) = face value
+  - Face cards (Jack, Queen, King) = 10
+  - Ace = 11 or 1 depending on hand
+- "Hit" and "Stand" actions for player
+- Automatic dealer play according to standard rules
+- Detects natural Blackjack and Pushes
+- Start a new round at any time
+
+---
+
+## What is Blackjack?
+
+Blackjack is played with a standard deck of cards. The goal is to have a hand **closer to 21 than the dealer** without exceeding it.
+
+### Card Values
+
+- Number cards (2–10) = face value  
+- Face cards (Jack, Queen, King) = 10  
+- Ace = 11, unless it would make your hand exceed 21, then 1  
+
+### Gameplay
+
+1. Both player and dealer are dealt **two initial cards**.
+2. If you want another card, you **"Hit"**.
+3. If you are satisfied with your hand, you **"Stand"**.
+4. The dealer reveals their hidden card and plays according to standard rules.
+5. The round is won by the player with the hand **closest to 21 without going over**.
+
+### Special Cases
+
+- A starting hand of an Ace and a 10-value card = **Blackjack** (instant win unless dealer also has it).
+
+---
+
+## How to Play
 
 1. **Build and run the application:**
    ```bash
    dotnet build
    dotnet run
-   ```
  2. **Press "Play"**
  3. **Press "Hit" if you want to be dealt another card**
  4. **Press "Stand" if you want to remain with your current hand**
