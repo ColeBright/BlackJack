@@ -1,9 +1,10 @@
-﻿using BlackJack.DataTransfer.GameDtos;
-using BlackJack.Game.GameModels;
-using BlackJack.Helpers;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BlackJack.Game
+namespace BlackJack.Domain.GameModels
 {
     public enum GameState
     {
@@ -24,8 +25,8 @@ namespace BlackJack.Game
         public Hand DealerHand { get; private set; }
         public bool PlayerHasStood { get; private set; }
 
-        public GameEngine() 
-        { 
+        public GameEngine()
+        {
             CreateDeck();
             RefreshHands();
         }
@@ -85,7 +86,7 @@ namespace BlackJack.Game
 
             PlayerHand.AddCard(Deck.Draw());
 
-            if(PlayerHand.GetValue() > 21) return GameState.PlayerBusted;
+            if (PlayerHand.GetValue() > 21) return GameState.PlayerBusted;
 
             return GameState.InProgress;
         }
@@ -129,7 +130,7 @@ namespace BlackJack.Game
 
             return playerValue > dealerValue ? GameState.PlayerWin : GameState.DealerWin;
         }
-        
+
         public bool IsRoundFinished()
         {
             var outcome = PeekState();
@@ -189,65 +190,22 @@ namespace BlackJack.Game
             }
         }
 
-        public void LoadHands(IEnumerable<string> playerCardKeys, IEnumerable<string> dealerCardKeys)
-        {
-            if (playerCardKeys == null) playerCardKeys = Array.Empty<string>();
-            if (dealerCardKeys == null) dealerCardKeys = Array.Empty<string>();
-
-            var newPlayer = new Hand();
-            foreach (var k in playerCardKeys)
-            {
-                var card = CardSerialization.FromKey(k);
-                newPlayer.AddCard(card);
-            }
-
-            var newDealer = new Hand(isDealer: true);
-            foreach (var k in dealerCardKeys)
-            {
-                var card = CardSerialization.FromKey(k);
-                newDealer.AddCard(card);
-            }
-
-            // Atomically replace the hands
-            PlayerHand = newPlayer;
-            DealerHand = newDealer;
-        }
-
         public void RestorePlayerHasStood(bool hasStood)
         {
             PlayerHasStood = hasStood;
         }
 
-        public GameStateDto ToDto()
+        public void LoadHands(Hand playerHand, Hand dealerHand, bool playerHasStood)
         {
-            return new GameStateDto
-            {
-                DeckKeys = Deck.Cards.Select(CardSerialization.ToKey).ToList(),
-                PlayerHand = new HandDto
-                {
-                    CardKeys = PlayerHand.Cards.Select(CardSerialization.ToKey).ToList(),
-                    IsDealer = false
-                },
-                DealerHand = new HandDto
-                {
-                    CardKeys = DealerHand.Cards.Select(CardSerialization.ToKey).ToList(),
-                    IsDealer = true
-                },
-                PlayerHasStood = this.PlayerHasStood
-            };
+            var pCards = playerHand.Cards ?? new List<Card>();
+            var dCards = dealerHand.Cards ?? new List<Card>();
+
+            var newPlayerHand = new Hand(pCards, isDealer: false);
+            var newDealerHand = new Hand(dCards, isDealer: true);
+
+            PlayerHand = newPlayerHand;
+            DealerHand = newDealerHand;
+            RestorePlayerHasStood(playerHasStood);
         }
-
-        public static GameEngine FromDto(GameStateDto dto)
-        {
-            var deck = new Deck(dto.DeckKeys.Select(CardSerialization.FromKey));
-            var engine = new GameEngine(deck);
-
-            engine.PlayerHand = new Hand(dto.PlayerHand.CardKeys.Select(CardSerialization.FromKey).ToList());
-            engine.DealerHand = new Hand(dto.DealerHand.CardKeys.Select(CardSerialization.FromKey).ToList(), isDealer: true);
-            engine.PlayerHasStood = dto.PlayerHasStood;
-
-            return engine;
-        }
-
     }
 }

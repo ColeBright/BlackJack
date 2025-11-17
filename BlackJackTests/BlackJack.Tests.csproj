@@ -25,7 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BlackJack\BlackJack.csproj" />
+    <ProjectReference Include="..\BlackJack\BlackJack.Web.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlackJack.Domain\BlackJack.Domain.csproj" />
   </ItemGroup>
 
   <Target Name="CopyAppDepsJson" AfterTargets="Build">

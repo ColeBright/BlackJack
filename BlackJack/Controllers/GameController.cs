@@ -1,7 +1,6 @@
-﻿using BlackJack.Game;
-using BlackJack.Game.GameModels;
+﻿using BlackJack.Domain.GameModels;
+using BlackJack.Game;
 using BlackJack.Game.UiSession;
-using BlackJack.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlackJack.Controllers
@@ -16,7 +15,7 @@ namespace BlackJack.Controllers
         {
             var dto = HttpContext.Session.GetGameState(SessionKey);
             if (dto == null) return null;
-            return GameEngine.FromDto(dto);
+            return dto.FromDto();
         }
 
         public GameController(ILogger<GameController> logger) 
@@ -32,7 +31,7 @@ namespace BlackJack.Controllers
         }
 
         public IActionResult Game()
-        {
+        {        
             var state = LoadEngine();
             if (state == null) return RedirectToAction("Index");
 

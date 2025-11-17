@@ -1,5 +1,5 @@
 ﻿using BlackJack.Game;
-using BlackJack.Game.GameModels;
+using BlackJack.Domain.GameModels;
 
 namespace BlackJackTests.UnitTests
 {
