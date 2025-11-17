@@ -39,11 +39,34 @@ namespace BlackJack.Controllers
         }
 
         [HttpPost]
+        public IActionResult PlaceBet(decimal amount)
+        {
+            var engine = LoadEngine();
+            try
+            {
+                engine.PlayerBet.PlaceBet(amount);
+                SaveState(engine);
+            }
+            catch (Exception ex) 
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Game");
+            }
+
+            return RedirectToAction("Game");
+        }
+
+        [HttpPost]
         public IActionResult Start()
         {
             try
             {
-                var engine = new GameEngine();
+                var engine = LoadEngine();
+                if (engine.PlayerBet.CurrentBet <= 0)
+                {
+                    TempData["Error"] = "Place a bet first!";
+                    return RedirectToAction("Game");
+                }
                 engine.StartRound();
 
                 SaveState(engine);

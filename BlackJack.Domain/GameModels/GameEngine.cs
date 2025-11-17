@@ -25,16 +25,20 @@ namespace BlackJack.Domain.GameModels
         public Hand DealerHand { get; private set; }
         public bool PlayerHasStood { get; private set; }
 
+        public Bet PlayerBet { get; private set; }
+
         public GameEngine()
         {
             CreateDeck();
             RefreshHands();
+            PlayerBet = new Bet(1000);
         }
 
         public GameEngine(Deck deck)
         {
             Deck = deck;
             RefreshHands();
+            PlayerBet = new Bet(1000);
         }
 
         public void CreateDeck()
@@ -69,7 +73,11 @@ namespace BlackJack.Domain.GameModels
             PlayerHand.AddCard(Deck.Draw());
             DealerHand.AddCard(Deck.Draw());
 
-            return CheckForBlackjack() ?? GameState.InProgress;
+            GameState? checkForBlackJack = CheckForBlackjack();
+
+            if (checkForBlackJack != null) PlayerBet.CalculateWinnings(checkForBlackJack);
+
+            return checkForBlackJack ?? GameState.InProgress;
         }
 
         /// <summary>
@@ -86,7 +94,11 @@ namespace BlackJack.Domain.GameModels
 
             PlayerHand.AddCard(Deck.Draw());
 
-            if (PlayerHand.GetValue() > 21) return GameState.PlayerBusted;
+            if (PlayerHand.GetValue() > 21)
+            {
+                PlayerBet.CalculateWinnings(GameState.PlayerBusted);
+                return GameState.PlayerBusted;
+            }
 
             return GameState.InProgress;
         }
@@ -102,7 +114,11 @@ namespace BlackJack.Domain.GameModels
 
             DealerPlays();
 
-            if (DealerHand.GetValue() > 21) return GameState.DealerBusted;
+            if (DealerHand.GetValue() > 21)
+            {
+                PlayerBet.CalculateWinnings(GameState.DealerBusted);
+                return GameState.DealerBusted;
+            }
 
             PlayerHasStood = true;
 
@@ -126,14 +142,23 @@ namespace BlackJack.Domain.GameModels
             int playerValue = PlayerHand.GetValue();
             int dealerValue = DealerHand.GetValue();
 
-            if (playerValue == dealerValue) return GameState.Push;
+            if (playerValue == dealerValue)
+            {
+                PlayerBet.CalculateWinnings(GameState.Push);
+                return GameState.Push;
+            }
 
-            return playerValue > dealerValue ? GameState.PlayerWin : GameState.DealerWin;
+            var state = playerValue > dealerValue ? GameState.PlayerWin : GameState.DealerWin;
+            PlayerBet.CalculateWinnings(state);
+            return state;
+
+
         }
 
         public bool IsRoundFinished()
         {
             var outcome = PeekState();
+            PlayerBet.CalculateWinnings(outcome);
             return outcome != GameState.InProgress;
         }
 
