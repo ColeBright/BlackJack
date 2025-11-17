@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35728.132
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackJack", "BlackJack\BlackJack.csproj", "{369F0195-910A-47D7-A7A8-4BBD2F65D4D6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackJack.Web", "BlackJack\BlackJack.Web.csproj", "{369F0195-910A-47D7-A7A8-4BBD2F65D4D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackJackTests", "BlackJackTests\BlackJackTests.csproj", "{8ADB6C96-1CD0-46D8-81BC-8E3F6F30AF46}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackJack.Tests", "BlackJackTests\BlackJack.Tests.csproj", "{8ADB6C96-1CD0-46D8-81BC-8E3F6F30AF46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlackJack.Domain", "BlackJack.Domain\BlackJack.Domain.csproj", "{C0860B04-A77A-4172-9C88-27B72CCE19C3}"
 EndProject
