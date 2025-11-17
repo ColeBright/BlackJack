@@ -44,11 +44,13 @@ Blackjack is played with a standard deck of cards. The goal is to have a hand **
 
 ## How to Play
 
-1. **Build and run the application:**
+1. **Download .zip and extract.**
+2. **Navigate to BlackJack folder.**
+3. **Build and run the application:**
    ```bash
    dotnet build
    dotnet run
- 2. **Press "Play"**
- 3. **Press "Hit" if you want to be dealt another card**
- 4. **Press "Stand" if you want to remain with your current hand**
- 5. **Press "New Round" if you want to start a new round**
+ 4. **Press "Play"**
+ 5. **Press "Hit" if you want to be dealt another card**
+ 6. **Press "Stand" if you want to remain with your current hand**
+ 7. **Press "New Round" if you want to start a new round**
