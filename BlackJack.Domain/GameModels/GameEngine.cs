@@ -54,6 +54,13 @@ namespace BlackJack.Domain.GameModels
             PlayerHasStood = false;
         }
 
+        public void PlaceBet(decimal amount)
+        {
+            EnsureCardsAvailable(4);
+            RefreshHands();
+            PlayerBet.PlaceBet(amount);
+        }
+
         /// <summary>
         ///  Starts a new round
         ///  Creates and shuffles a new deck if there is not enough to deal
@@ -63,9 +70,9 @@ namespace BlackJack.Domain.GameModels
         public GameState StartRound()
         {
             // so cards don't run out mid-deal
-            EnsureCardsAvailable(4);
+            //EnsureCardsAvailable(4);
 
-            RefreshHands();
+            //RefreshHands();
 
             //Deal
             PlayerHand.AddCard(Deck.Draw());

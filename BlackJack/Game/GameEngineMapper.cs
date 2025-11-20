@@ -28,6 +28,7 @@ namespace BlackJack.Game
                 {
                     CurrentBet = engine.PlayerBet.CurrentBet,
                     PlayerBalance = engine.PlayerBet.PlayerBalance,
+                    IsActive = engine.PlayerBet.IsActive,
                 }
             };
         }
@@ -41,7 +42,7 @@ namespace BlackJack.Game
             var playerHand = new Hand(dto.PlayerHand.CardKeys.Select(CardSerialization.FromKey).ToList());
             var dealerHand = new Hand(dto.DealerHand.CardKeys.Select(CardSerialization.FromKey).ToList(), isDealer: true);
             var playerHasStood = dto.PlayerHasStood;
-            var bet = new Bet(dto.Bet.CurrentBet, dto.Bet.PlayerBalance);
+            var bet = new Bet(dto.Bet.CurrentBet, dto.Bet.PlayerBalance, dto.Bet.IsActive);
 
             engine.LoadHands(playerHand, dealerHand, playerHasStood, bet);
 

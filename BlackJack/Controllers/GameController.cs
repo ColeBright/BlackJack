@@ -51,7 +51,7 @@ namespace BlackJack.Controllers
 
             try
             {
-                engine.PlayerBet.PlaceBet(amount);
+                engine.PlaceBet(amount);
                 SaveState(engine);
             }
             catch (Exception ex) 
@@ -69,7 +69,7 @@ namespace BlackJack.Controllers
             {
                 var engine = LoadEngine() ?? new GameEngine();
 
-                if (engine.PlayerBet == null || engine.PlayerBet.CurrentBet <= 0)
+                if (engine.PlayerBet == null || engine.PlayerBet.CurrentBet <= 0 || !engine.PlayerBet.IsActive)
                 {
                     TempData["Error"] = "Place a bet first!";
                     SaveState(engine);

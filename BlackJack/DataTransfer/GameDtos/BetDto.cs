@@ -5,5 +5,7 @@
         public decimal CurrentBet { get; set; }
         public decimal PlayerBalance { get; set; }
 
+        public bool IsActive { get; set; }
+
     }
 }

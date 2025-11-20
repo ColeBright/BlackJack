@@ -8,16 +8,17 @@ namespace BlackJack.Domain.GameModels
         public decimal PlayerBalance { get; set; } = 0;
         public decimal CurrentBet { get; set; } = 0;
 
-        private bool IsActive { get; set; }
+        public bool IsActive { get; private set; } = false;
 
         public Bet(decimal playerbalance)
         {
             PlayerBalance = playerbalance;
         }
-        public Bet(decimal currentBet, decimal playerbalance)
+        public Bet(decimal currentBet, decimal playerbalance, bool isActive)
         {
             PlayerBalance = playerbalance;
             CurrentBet = currentBet;
+            IsActive = isActive;
         }
 
         public void PlaceBet(decimal amount)
@@ -43,11 +44,13 @@ namespace BlackJack.Domain.GameModels
                     case GameState.PlayerBlackjack:
                         PlayerBalance += CurrentBet * 1.5m + (CurrentBet * 2);
                         break;
+                    case GameState.Push:
+                        PlayerBalance += CurrentBet;
+                        break;
                 }
                 CurrentBet = 0;
                 IsActive = false;
             }
-
         }
     }
 }
