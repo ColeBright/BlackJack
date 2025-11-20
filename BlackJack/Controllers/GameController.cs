@@ -131,13 +131,5 @@ namespace BlackJack.Controllers
                 return RedirectToAction("Index");
             }
         }
-
-        public IActionResult Result()
-        {
-            var state = LoadEngine();
-            if (state == null) return RedirectToAction("Start");
-
-            return View("Game", state);
-        }
     }
 }

@@ -18,12 +18,15 @@
 
     @{
         var hasCards = Model.PlayerHand.Cards.Any() || Model.DealerHand.Cards.Any();
+        var betActive = Model.PlayerBet.IsActive;
     }
 
     @* Before a round starts: allow betting and only show New Round *@
     @if (!hasCards)
     {
-        @Html.Partial("_BetPartial", Model)
+        if(!betActive){
+            @Html.Partial("_BetPartial", Model)
+        }
 
         <form method="post" asp-action="Start">
             <button type="submit" class="btn btn-warning">New Round</button>
