@@ -220,7 +220,7 @@ namespace BlackJack.Domain.GameModels
             PlayerHasStood = hasStood;
         }
 
-        public void LoadHands(Hand playerHand, Hand dealerHand, bool playerHasStood)
+        public void LoadHands(Hand playerHand, Hand dealerHand, bool playerHasStood, Bet bet)
         {
             var pCards = playerHand.Cards ?? new List<Card>();
             var dCards = dealerHand.Cards ?? new List<Card>();
@@ -230,6 +230,8 @@ namespace BlackJack.Domain.GameModels
 
             PlayerHand = newPlayerHand;
             DealerHand = newDealerHand;
+
+            PlayerBet = bet;
             RestorePlayerHasStood(playerHasStood);
         }
     }

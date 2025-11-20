@@ -11,7 +11,7 @@ namespace BlackJack.Controllers
 
         private const string SessionKey = "BlackJack.UiState";
 
-        private GameEngine LoadEngine()
+        private GameEngine? LoadEngine()
         {
             var dto = HttpContext.Session.GetGameState(SessionKey);
             if (dto == null) return null;
@@ -32,8 +32,13 @@ namespace BlackJack.Controllers
 
         public IActionResult Game()
         {        
+            // Ensure we always have an engine in session so betting UI can work
             var state = LoadEngine();
-            if (state == null) return RedirectToAction("Index");
+            if (state == null)
+            {
+                state = new GameEngine();
+                SaveState(state);
+            }
 
             return View("Game", state);
         }
@@ -41,7 +46,9 @@ namespace BlackJack.Controllers
         [HttpPost]
         public IActionResult PlaceBet(decimal amount)
         {
-            var engine = new GameEngine();
+            // Work against the existing engine so balance persists between rounds
+            var engine = LoadEngine() ?? new GameEngine();
+
             try
             {
                 engine.PlayerBet.PlaceBet(amount);
@@ -50,7 +57,6 @@ namespace BlackJack.Controllers
             catch (Exception ex) 
             {
                 TempData["Error"] = ex.Message;
-                return RedirectToAction("Game");
             }
 
             return RedirectToAction("Game");
@@ -61,12 +67,15 @@ namespace BlackJack.Controllers
         {
             try
             {
-                var engine = new GameEngine();
-                if (engine.PlayerBet.CurrentBet <= 0 || engine.PlayerBet == null)
+                var engine = LoadEngine() ?? new GameEngine();
+
+                if (engine.PlayerBet == null || engine.PlayerBet.CurrentBet <= 0)
                 {
                     TempData["Error"] = "Place a bet first!";
+                    SaveState(engine);
                     return RedirectToAction("Game");
                 }
+
                 engine.StartRound();
 
                 SaveState(engine);
@@ -76,7 +85,8 @@ namespace BlackJack.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error starting new round");
-                return RedirectToAction("Index");
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Game");
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using BlackJack.DataTransfer.GameDtos;
 using BlackJack.Domain.GameModels;
 using BlackJack.Helpers;
+using BlackJack.Web.DataTransfer.GameDtos;
 
 namespace BlackJack.Game
 {
@@ -22,7 +23,12 @@ namespace BlackJack.Game
                     CardKeys = engine.DealerHand.Cards.Select(CardSerialization.ToKey).ToList(),
                     IsDealer = true
                 },
-                PlayerHasStood = engine.PlayerHasStood
+                PlayerHasStood = engine.PlayerHasStood,
+                Bet = new BetDto
+                {
+                    CurrentBet = engine.PlayerBet.CurrentBet,
+                    PlayerBalance = engine.PlayerBet.PlayerBalance,
+                }
             };
         }
 
@@ -35,8 +41,9 @@ namespace BlackJack.Game
             var playerHand = new Hand(dto.PlayerHand.CardKeys.Select(CardSerialization.FromKey).ToList());
             var dealerHand = new Hand(dto.DealerHand.CardKeys.Select(CardSerialization.FromKey).ToList(), isDealer: true);
             var playerHasStood = dto.PlayerHasStood;
+            var bet = new Bet(dto.Bet.CurrentBet, dto.Bet.PlayerBalance);
 
-            engine.LoadHands(playerHand, dealerHand, playerHasStood);
+            engine.LoadHands(playerHand, dealerHand, playerHasStood, bet);
 
             return engine;
         }

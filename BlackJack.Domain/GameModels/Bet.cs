@@ -12,6 +12,11 @@ namespace BlackJack.Domain.GameModels
         {
             PlayerBalance = playerbalance;
         }
+        public Bet(decimal currentBet, decimal playerbalance)
+        {
+            PlayerBalance = playerbalance;
+            CurrentBet = currentBet;
+        }
 
         public void PlaceBet(decimal amount)
         {

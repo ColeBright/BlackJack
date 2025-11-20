@@ -4,49 +4,55 @@
     var imgPath = "/images/cards/back.png";
 }
 <div class="game-container">
-    @Html.Partial("_BetPartial")
-    <h2>BlackJack</h2>
-    <h4>Dealer</h4>
-    <ul>
-        @for (int i = 0; i < Model.DealerHand.Cards.Count; i++)
-        {
-            if (i == 1 && !Model.IsRoundFinished())
+    @if (Model.PlayerBet.CurrentBet <= 0){
+        @Html.Partial("_BetPartial")
+    }
+    @if (Model.PlayerBet.CurrentBet > 0){
+        <h2>BlackJack</h2>
+        <h4>Dealer</h4>
+        <ul>
+            @for (int i = 0; i < Model.DealerHand.Cards.Count; i++)
             {
-                <img src="@imgPath" alt="Back of card" style="width: 110px; height:auto;" />
+                if (i == 1 && !Model.IsRoundFinished())
+                {
+                    <img src="@imgPath" alt="Back of card" style="width: 110px; height:auto;" />
+                }
+                else
+                {
+                    @Html.Partial("_CardPartial", Model.DealerHand.Cards[i])
+                }
             }
-            else{
-                @Html.Partial("_CardPartial", Model.DealerHand.Cards[i])
-            }
-        }
-    </ul>
+        </ul>
 
-    <h4>Player</h4>
-    <ul>
-        @foreach (var card in Model.PlayerHand.Cards)
+        <h4>Player</h4>
+        <ul>
+            @foreach (var card in Model.PlayerHand.Cards)
+            {
+                @Html.Partial("_CardPartial", card)
+            }
+        </ul>
+
+        @if (!Model.IsRoundFinished())
         {
-            @Html.Partial("_CardPartial", card)
+            <div class="button-container">
+                <form method="post" asp-action="Hit">
+                    <button type="submit" class="btn btn-primary">Hit</button>
+                </form>
+                <form method="post" asp-action="Stand">
+                    <button type="submit" class="btn btn-primary">Stand</button>
+                </form>
+            </div>
         }
-    </ul>
 
-    @if (!Model.IsRoundFinished())
-    {
-        <div class="button-container">
-        <form method="post" asp-action="Hit">
-            <button type="submit" class="btn btn-primary">Hit</button>
+        <form method="post" asp-action="Start">
+            <button type="submit" class="btn btn-warning">New Round</button>
         </form>
-        <form method="post" asp-action="Stand">
-            <button type="submit" class="btn btn-primary">Stand</button>
-        </form>
-        </div>
+
+        @if (Model.IsRoundFinished())
+        {
+            @Html.Partial("_ResultPartial", Model)
+        }
     }
 
-    <form method="post" asp-action="Start">
-        <button type="submit" class="btn btn-warning">New Round</button>
-    </form>
-
-    @if (Model.IsRoundFinished())
-    {
-        @Html.Partial("_ResultPartial", Model)
-    }
 
 </div>
