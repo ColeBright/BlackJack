@@ -151,14 +151,15 @@ namespace BlackJack.Domain.GameModels
             var state = playerValue > dealerValue ? GameState.PlayerWin : GameState.DealerWin;
             PlayerBet.CalculateWinnings(state);
             return state;
-
-
         }
 
         public bool IsRoundFinished()
         {
             var outcome = PeekState();
-            PlayerBet.CalculateWinnings(outcome);
+            if(outcome != GameState.InProgress)
+            {
+                PlayerBet.CalculateWinnings(outcome);
+            }
             return outcome != GameState.InProgress;
         }
 

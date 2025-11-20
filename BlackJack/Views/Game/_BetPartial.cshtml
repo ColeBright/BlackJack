@@ -1,12 +1,7 @@
 ﻿@model BlackJack.Domain.GameModels.GameEngine
-@{
-}
 
 <form method="post" asp-action="PlaceBet">
     <label>Place your bet:</label>
     <input type="number" name="amount" min="2" max="500" />
-    <button type="submit">Bet</button>
+    <button type="submit" class="btn btn-primary">Bet</button>
 </form>
-
-<p>Balance: @Model.PlayerBet.PlayerBalance</p>
-<p>Current Bet: @Model.PlayerBet.CurrentBet </p>

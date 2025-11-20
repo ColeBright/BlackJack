@@ -4,11 +4,33 @@
     var imgPath = "/images/cards/back.png";
 }
 <div class="game-container">
-    @if (Model.PlayerBet.CurrentBet <= 0){
-        @Html.Partial("_BetPartial")
+    <h2>BlackJack</h2>
+
+    <div>
+        <p>Balance: @Model.PlayerBet.PlayerBalance</p>
+        <p>Current Bet: @Model.PlayerBet.CurrentBet</p>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="text-danger">@TempData["Error"]</div>
     }
-    @if (Model.PlayerBet.CurrentBet > 0){
-        <h2>BlackJack</h2>
+
+    @{
+        var hasCards = Model.PlayerHand.Cards.Any() || Model.DealerHand.Cards.Any();
+    }
+
+    @* Before a round starts: allow betting and only show New Round *@
+    @if (!hasCards)
+    {
+        @Html.Partial("_BetPartial", Model)
+
+        <form method="post" asp-action="Start">
+            <button type="submit" class="btn btn-warning">New Round</button>
+        </form>
+    }
+    else
+    {
         <h4>Dealer</h4>
         <ul>
             @for (int i = 0; i < Model.DealerHand.Cards.Count; i++)
@@ -53,6 +75,4 @@
             @Html.Partial("_ResultPartial", Model)
         }
     }
-
-
 </div>
