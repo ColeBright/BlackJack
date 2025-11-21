@@ -10,5 +10,7 @@ namespace BlackJackTests.UnitTests
             {
             new object[] { new Card[] { new Card(Suit.Hearts, Rank.Ace), new Card(Suit.Spades, Rank.King) }, 21 },
             };
+
+
     }
 }

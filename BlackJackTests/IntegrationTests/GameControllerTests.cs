@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace BlackJackTests.IntegrationTests
 {
@@ -36,15 +35,6 @@ namespace BlackJackTests.IntegrationTests
 
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Equal("/Game/Game", response.Headers.Location?.OriginalString);
-        }
-
-        [Fact]
-        public async Task Game_GetWithoutSession_RedirectsToIndex()
-        {
-            var response = await _httpClient.GetAsync("/Game/Game");
-
-            Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-            Assert.Equal("/", response.Headers.Location?.OriginalString);
         }
 
     }

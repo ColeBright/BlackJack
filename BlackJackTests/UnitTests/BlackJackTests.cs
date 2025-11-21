@@ -36,5 +36,25 @@ namespace BlackJackTests.UnitTests
 
             Assert.Equal(21, hand.GetValue());
         }
+
+        [Theory]
+        [InlineData(GameState.PlayerBlackjack, 100, 50, 275)]
+        [InlineData(GameState.PlayerWin, 100, 50, 200)]
+        [InlineData(GameState.DealerBusted, 100, 50, 200)]
+        [InlineData(GameState.Push, 100, 50, 150)]
+        public void BetCalculatesCorrectlyGivenGameState(GameState state, decimal playerBalance, decimal bet, decimal expected) 
+        {
+            var betTest = new Bet(bet, playerBalance, true);
+
+            betTest.CalculateWinnings(state);
+
+            Assert.Equal(betTest.PlayerBalance, expected);
+        }
+
+        public void PlaceBetZeroThrowsException()
+        {
+            var 
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+        }
     }
 }

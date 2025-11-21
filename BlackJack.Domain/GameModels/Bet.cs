@@ -42,7 +42,7 @@ namespace BlackJack.Domain.GameModels
                         PlayerBalance += CurrentBet * 2;
                         break;
                     case GameState.PlayerBlackjack:
-                        PlayerBalance += CurrentBet * 1.5m + (CurrentBet * 2);
+                        PlayerBalance += (CurrentBet * 1.5m) + (CurrentBet * 2);
                         break;
                     case GameState.Push:
                         PlayerBalance += CurrentBet;
